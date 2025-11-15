@@ -1,312 +1,370 @@
-# V1tr0 Backend API
+# 🚀 V1tr0 Backend API - MongoDB
 
-## 📋 Descripción
+API REST para gestión de proyectos, reuniones y transcripciones con procesamiento de IA.
 
-Backend API desarrollado en FastAPI para el dashboard de gestión de proyectos V1tr0. Proporciona una API REST completa para la gestión de proyectos, clientes, reuniones, transcripciones de audio y chat con IA.
+## ✨ Características
 
-## 🏗️ Arquitectura
+- ✅ **FastAPI** - Framework moderno y de alto rendimiento
+- ✅ **MongoDB** - Base de datos NoSQL escalable
+- ✅ **Redis** - Cache y sesiones
+- ✅ **OpenAI** - Procesamiento y resúmenes de transcripciones
+- ✅ **Docker** - Contenedorización completa
+- ✅ **Sin autenticación** - Arquitectura simplificada
 
-### Tecnologías Principales
+## 🎯 Funcionalidades
 
-- **FastAPI**: Framework web moderno y rápido para Python
-- **SQLAlchemy**: ORM asíncrono para base de datos
-- **PostgreSQL**: Base de datos principal
-- **Supabase**: Autenticación y gestión de usuarios
-- **OpenAI**: Procesamiento de IA para transcripciones y chat
-- **Jitsi Meet**: Integración para videollamadas
-- **Redis**: Cache y gestión de sesiones
+### Gestión de Proyectos
+- Crear y administrar proyectos
+- Asignar clientes a proyectos
+- Seguimiento de progreso y estados
 
-### Estructura del Proyecto
-
-```
-backend/
-├── app/
-│   ├── api/
-│   │   └── v1/
-│   │       ├── endpoints/          # Endpoints de la API
-│   │       │   ├── auth.py
-│   │       │   ├── users.py
-│   │       │   ├── projects.py
-│   │       │   ├── clients.py
-│   │       │   ├── meetings.py
-│   │       │   ├── transcriptions.py
-│   │       │   └── ai_chat.py
-│   │       └── api.py              # Router principal
-│   ├── core/
-│   │   ├── config.py               # Configuración
-│   │   ├── database.py             # Configuración de BD
-│   │   ├── security.py             # Autenticación y seguridad
-│   │   └── deps.py                 # Dependencias
-│   ├── crud/                       # Operaciones CRUD
-│   │   ├── crud_user.py
-│   │   ├── crud_client.py
-│   │   ├── crud_project.py
-│   │   ├── crud_meeting.py
-│   │   ├── crud_transcription.py
-│   │   └── crud_chat_message.py
-│   ├── models/                     # Modelos SQLAlchemy
-│   │   ├── base.py
-│   │   ├── user.py
-│   │   ├── client.py
-│   │   ├── project.py
-│   │   ├── meeting.py
-│   │   ├── transcription.py
-│   │   └── chat_message.py
-│   ├── schemas/                    # Esquemas Pydantic
-│   │   ├── common.py
-│   │   ├── auth.py
-│   │   ├── user.py
-│   │   ├── client.py
-│   │   ├── project.py
-│   │   ├── meeting.py
-│   │   ├── transcription.py
-│   │   └── chat_message.py
-│   ├── services/                   # Lógica de negocio
-│   │   ├── auth_service.py
-│   │   ├── ai_service.py
-│   │   ├── transcription_service.py
-│   │   ├── meeting_service.py
-│   │   └── notification_service.py
-│   └── utils/                      # Utilidades
-│       ├── audio_processing.py
-│       ├── file_handling.py
-│       └── validators.py
-├── alembic/                        # Migraciones de BD
-├── uploads/                        # Archivos subidos
-├── tests/                          # Tests
-├── main.py                         # Punto de entrada
-├── requirements.txt                # Dependencias
-├── .env.example                    # Variables de entorno
-└── README.md
-```
-
-## 🚀 Funcionalidades Principales
-
-### 1. Autenticación y Usuarios
-- Integración con Supabase para autenticación
-- Gestión de perfiles de usuario
-- Control de acceso basado en roles
-- JWT tokens para autorización
-
-### 2. Gestión de Proyectos
-- CRUD completo de proyectos
-- Seguimiento de progreso y estado
-- Gestión de presupuestos y horas
-- Filtros y búsqueda avanzada
-- Estadísticas y métricas
-
-### 3. Gestión de Clientes
-- CRUD completo de clientes
-- Información de contacto y facturación
-- Historial de proyectos por cliente
-- Segmentación y priorización
-
-### 4. Sistema de Reuniones
-- Integración con Jitsi Meet
-- Programación y gestión de reuniones
-- Grabación automática
+### Reuniones
+- Programar reuniones con Jitsi Meet
+- Vincular reuniones a proyectos
 - Gestión de participantes
-- URLs de acceso seguras
 
-### 5. Transcripciones de Audio
-- Procesamiento automático con OpenAI Whisper
-- Generación de resúmenes con IA
-- Extracción de puntos clave
-- Identificación de compromisos y próximos pasos
-- Detección de participantes
+### Transcripciones
+- Almacenar transcripciones de reuniones
+- **Procesamiento con IA** para generar resúmenes
+- Análisis y extracción de insights
+- Multi-idioma
 
-### 6. Chat con IA Contextual
-- Chat inteligente por proyecto
-- Contexto basado en transcripciones y datos del proyecto
-- Búsqueda semántica en el historial
-- Generación de insights y recomendaciones
-- Historial de conversaciones
+### Chat con IA
+- Interacción con IA sobre proyectos y transcripciones
+- Consultas contextuales
+- Generación de contenido
 
-## 🔧 Configuración
+## 🚀 Inicio Rápido
 
-### Variables de Entorno
+### Prerrequisitos
 
-Copia `.env.example` a `.env` y configura las siguientes variables:
+- Docker y Docker Compose instalados
+- Nada más! 🎉
+
+### Levantar toda la aplicación
 
 ```bash
-# Base de datos
-DATABASE_URL=postgresql+asyncpg://user:password@localhost:5432/v1tr0_db
+# 1. Clonar el repositorio
+git clone <url-del-repo>
+cd backend_v1tr0
 
-# Supabase
-SUPABASE_URL=https://your-project.supabase.co
-SUPABASE_ANON_KEY=your_anon_key
-SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
+# 2. (Opcional) Configurar variables de entorno
+cp .env.example .env
+# Edita .env y agrega tu OPENAI_API_KEY si lo necesitas
 
-# OpenAI
-OPENAI_API_KEY=sk-your-openai-api-key
+# 3. Levantar todos los servicios con Docker
+sudo docker compose up -d
 
-# JWT
-SECRET_KEY=your-super-secret-key
-
-# Redis
-REDIS_URL=redis://localhost:6379
+# 4. Ver logs (opcional)
+docker compose logs -f api
 ```
 
-### Instalación
+**¡Eso es todo> /home/julian/Documents/back-v1tr0/backend_v1tr0/.dockerignore << 'EOF'
+# Git
+.git
+.gitignore
 
-1. **Crear entorno virtual:**
-```bash
-python -m venv venv
-source venv/bin/activate  # En Windows: venv\Scripts\activate
+# Python
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+*.egg
+*.egg-info
+dist
+build
+.venv
+venv
+env
+
+# IDEs
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# Testing
+.pytest_cache
+.coverage
+htmlcov
+
+# Documentation
+*.md
+docs/
+mkdocs.yml
+
+# Docker
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+logs/
+
+# Otros
+*.zip
+*.tar.gz
+.DS_Store
+EOF* 🎊
+
+## 📡 Acceso a los Servicios
+
+Una vez levantados los contenedores:
+
+| Servicio | URL | Descripción |
+|----------|-----|-------------|
+| **API REST** | http://localhost:8000 | Backend principal |
+| **Swagger UI** | http://localhost:8000/docs | Documentación interactiva |
+| **ReDoc** | http://localhost:8000/redoc | Documentación alternativa |
+| **Mongo Express** | http://localhost:8081 | GUI para MongoDB |
+| **MongoDB** | mongodb://localhost:27017 | Base de datos |
+| **Redis** | redis://localhost:6379 | Cache |
+
+### Credenciales Mongo Express
+
+- **Usuario**: `admin`
+- **Contraseña**: `admin123`
+
+## 📊 Estructura de la Base de Datos
+
+### Colecciones MongoDB
+
+```
+v1tr0_db/
+├── users              # Usuarios del sistema
+├── clients            # Clientes
+├── projects           # Proyectos
+├── meetings           # Reuniones
+├── transcriptions     # Transcripciones con resúmenes de IA
+└── chat_messages      # Conversaciones con IA
 ```
 
-2. **Instalar dependencias:**
+## 🔧 Comandos Útiles
+
+### Docker Compose
+
 ```bash
+# Iniciar todos los servicios
+sudo docker compose up -d
+
+# Ver logs de todos los servicios
+docker compose logs -f
+
+# Ver logs solo de la API
+docker compose logs -f api
+
+# Detener todos los servicios
+docker compose down
+
+# Detener y eliminar volúmenes (CUIDADO: borra los datos)
+docker compose down -v
+
+# Reconstruir la imagen de la API
+docker compose build api
+
+# Reiniciar la API
+docker compose restart api
+
+# Ver estado de los servicios
+docker compose ps
+```
+
+### MongoDB
+
+```bash
+# Conectarse a MongoDB
+docker exec -it v1tr0_mongodb mongosh
+
+# Comandos dentro de MongoDB:
+> use v1tr0_db
+> show collections
+> db.users.find().pretty()
+> db.transcriptions.countDocuments()
+```
+
+## 🛠️ Desarrollo Local (sin Docker)
+
+Si prefieres desarrollar sin Docker:
+
+```bash
+# 1. Crear entorno virtual
+python -m venv .venv
+source .venv/bin/activate  # Linux/Mac
+# .venv\Scripts\activate   # Windows
+
+# 2. Instalar dependencias
 pip install -r requirements.txt
-```
 
-3. **Configurar base de datos:**
-```bash
-# Crear base de datos PostgreSQL
-createdb v1tr0_db
+# 3. Iniciar MongoDB y Redis localmente
+# (Ver sección de instalación local)
 
-# Ejecutar migraciones
-alembic upgrade head
-```
-
-4. **Ejecutar servidor de desarrollo:**
-```bash
+# 4. Ejecutar la aplicación
 uvicorn main:app --reload --host 0.0.0.0 --port 8000
 ```
 
-## 📚 API Endpoints
+## 🗄️ Modelos de Datos
 
-### Autenticación
-- `POST /api/v1/auth/login` - Iniciar sesión
-- `POST /api/v1/auth/register` - Registrar usuario
-- `GET /api/v1/auth/me` - Obtener usuario actual
-- `POST /api/v1/auth/refresh` - Renovar token
+### Transcription (Ejemplo)
 
-### Usuarios
-- `GET /api/v1/users/` - Listar usuarios
-- `GET /api/v1/users/{id}` - Obtener usuario
-- `PUT /api/v1/users/{id}` - Actualizar usuario
-- `GET /api/v1/users/{id}/stats` - Estadísticas de usuario
+```json
+{}
+  "_id": "ObjectId",
+  "text": "Contenido de la transcripción...",
+  "language": "es",
+  "status": "completed",
+  "ai_summary": "Resumen generado por IA...",
+  "ai_insights": "Insights extraídos...",
+  "model_used": "gpt-4",
+  "meeting_id": "ObjectId",
+  "project_id": "ObjectId",
+  "created_by_id": "ObjectId",
+  "created_at": "2024-01-01T00:00:00",
+  "updated_at": "2024-01-01T00:00:00"
+}
+```
 
-### Proyectos
-- `GET /api/v1/projects/` - Listar proyectos
-- `POST /api/v1/projects/` - Crear proyecto
-- `GET /api/v1/projects/{id}` - Obtener proyecto
-- `PUT /api/v1/projects/{id}` - Actualizar proyecto
-- `DELETE /api/v1/projects/{id}` - Eliminar proyecto
-- `GET /api/v1/projects/{id}/stats` - Estadísticas de proyecto
+## 🤖 Integración con OpenAI
 
-### Clientes
-- `GET /api/v1/clients/` - Listar clientes
-- `POST /api/v1/clients/` - Crear cliente
-- `GET /api/v1/clients/{id}` - Obtener cliente
-- `PUT /api/v1/clients/{id}` - Actualizar cliente
-- `DELETE /api/v1/clients/{id}` - Eliminar cliente
-- `GET /api/v1/clients/{id}/projects` - Proyectos del cliente
+Para usar las funcionalidades de IA:
 
-### Reuniones
-- `GET /api/v1/meetings/` - Listar reuniones
-- `POST /api/v1/meetings/` - Crear reunión
-- `GET /api/v1/meetings/{id}` - Obtener reunión
-- `PUT /api/v1/meetings/{id}` - Actualizar reunión
-- `POST /api/v1/meetings/{id}/join` - Unirse a reunión
-- `POST /api/v1/meetings/{id}/leave` - Salir de reunión
+1. Obtén una API Key de [OpenAI](https://platform.openai.com/)
+2. Agrégala al archivo `.env`:
+   ```env
+   OPENAI_API_KEY=sk-tu-api-key-aqui
+   ```
+3. Reinicia los contenedores:
+   ```bash
+   docker compose restart api
+   ```
 
-### Transcripciones
-- `GET /api/v1/transcriptions/` - Listar transcripciones
-- `POST /api/v1/transcriptions/upload/{meeting_id}` - Subir audio
-- `GET /api/v1/transcriptions/{id}` - Obtener transcripción
-- `POST /api/v1/transcriptions/{id}/regenerate-summary` - Regenerar resumen
+## 🔐 Variables de Entorno
 
-### Chat con IA
-- `POST /api/v1/ai/chat/{project_id}` - Enviar mensaje
-- `GET /api/v1/ai/chat/{project_id}` - Historial de chat
-- `GET /api/v1/ai/ask/{project_id}` - Hacer pregunta específica
-- `GET /api/v1/ai/insights/{project_id}` - Obtener insights
-- `GET /api/v1/ai/search/{project_id}` - Búsqueda semántica
+Principales variables configurables en `.env`:
 
-## 🔒 Seguridad
+```env
+# MongoDB
+MONGODB_URL=mongodb://mongodb:27017/v1tr0_db
+MONGODB_DB=v1tr0_db
 
-- **Autenticación**: Integración con Supabase
-- **Autorización**: JWT tokens con roles
-- **CORS**: Configurado para el frontend
-- **Rate Limiting**: Protección contra abuso
-- **Validación**: Esquemas Pydantic estrictos
-- **Sanitización**: Limpieza de datos de entrada
+# OpenAI
+OPENAI_API_KEY=sk-your-key
+
+# Redis
+REDIS_URL=redis://redis:6379
+
+# Configuración
+ENVIRONMENT=production
+LOG_LEVEL=INFO
+```
+
+## 📝 API Endpoints (Ejemplos)
+
+### Health Check
+
+```bash
+curl http://localhost:8000/health
+```
+
+### Crear Usuario
+
+```bash
+curl -X POST http://localhost:8000/api/v1/users \
+  -H "Content-Type: application/json" \
+  -d '{}'
+    "email": "user@example.com",
+    "full_name": "Usuario Test"
+  }'
+```
+
+*Nota: Los endpoints específicos se implementarán según necesidades*
 
 ## 🧪 Testing
 
 ```bash
 # Ejecutar tests
-pytest
+docker compose exec api pytest
 
 # Con cobertura
-pytest --cov=app
-
-# Tests específicos
-pytest tests/test_projects.py
+docker compose exec api pytest --cov=app tests/
 ```
 
-## 📊 Monitoreo
+## 📦 Estructura del Proyecto
 
-- **Logs**: Configuración con Loguru
-- **Métricas**: Endpoints de salud y métricas
-- **Documentación**: Swagger UI automática en `/docs`
-- **Redoc**: Documentación alternativa en `/redoc`
-
-## 🚀 Despliegue
-
-### Docker
-
-```dockerfile
-# Dockerfile incluido para containerización
-docker build -t v1tr0-backend .
-docker run -p 8000:8000 v1tr0-backend
+```
+backend_v1tr0/
+├── app/
+│   ├── api/
+│   │   └── v1/
+│   │       ├── api.py           # Router principal
+│   │       └── endpoints/       # Endpoints (a implementar)
+│   ├── core/
+│   │   ├── config.py            # Configuración
+│   │   ├── database.py          # Conexión MongoDB
+│   │   └── deps.py              # Dependencias
+│   ├── models/                  # Modelos Pydantic
+│   └── schemas/                 # Schemas de validación
+├── main.py                      # Entry point
+├── requirements.txt             # Dependencias Python
+├── Dockerfile                   # Imagen Docker
+├── docker-compose.yml           # Orquestación
+└── .env                         # Variables de entorno
 ```
 
-### Variables de Producción
+## 🐛 Solución de Problemas
+
+### Error: "Cannot connect to the Docker daemon"
 
 ```bash
-# Configuración para producción
-ENVIRONMENT=production
-DEBUG=false
-LOG_LEVEL=INFO
+sudo systemctl start docker
+sudo usermod -aG docker $USER
+newgrp docker
 ```
 
-## 🔄 Integración con Frontend
+### La API no responde
 
-El backend está diseñado para integrarse perfectamente con el frontend Next.js existente:
+```bash
+# Ver logs
+docker compose logs api
 
-- **API Compatible**: Endpoints que coinciden con las llamadas del frontend
-- **Tipos TypeScript**: Esquemas Pydantic generan tipos compatibles
-- **CORS Configurado**: Permite requests desde el frontend
-- **WebSockets**: Para actualizaciones en tiempo real (futuro)
+# Verificar estado
+docker compose ps
 
-## 📈 Roadmap
+# Reiniciar
+docker compose restart api
+```
 
-- [ ] WebSockets para actualizaciones en tiempo real
-- [ ] Sistema de notificaciones
-- [ ] Integración con calendarios externos
-- [ ] API de webhooks
-- [ ] Dashboard de analytics
-- [ ] Exportación de reportes
-- [ ] Integración con herramientas de gestión de proyectos
+### MongoDB no inicia
 
-## 🤝 Contribución
+```bash
+# Verificar logs
+docker compose logs mongodb
 
-1. Fork el proyecto
-2. Crea una rama para tu feature (`git checkout -b feature/AmazingFeature`)
-3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
-4. Push a la rama (`git push origin feature/AmazingFeature`)
-5. Abre un Pull Request
+# Limpiar volúmenes y reiniciar
+docker compose down -v
+docker compose up -d
+```
+
+## 🚦 Estado del Proyecto
+
+- ✅ Configuración base completada
+- ✅ Modelos de datos definidos
+- ✅ Docker compose configurado
+- 🔨 Endpoints en desarrollo
+- 🔨 Tests en desarrollo
 
 ## 📄 Licencia
 
-Este proyecto está bajo la Licencia MIT - ver el archivo [LICENSE](LICENSE) para detalles.
+MIT License
 
-## 📞 Soporte
+---
 
-Para soporte técnico o preguntas:
-- Email: soporte@v1tr0.com
-- Documentación: [docs.v1tr0.com](https://docs.v1tr0.com)
-- Issues: [GitHub Issues](https://github.com/v1tr0/backend/issues)
+**Desarrollado con ❤️ usando FastAPI, MongoDB y Docker**

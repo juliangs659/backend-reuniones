@@ -1,51 +1,37 @@
-from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine, async_sessionmaker
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.pool import NullPool
-from typing import AsyncGenerator
+from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorDatabase
+from typing import Optional
 
 from app.core.config import settings
 
-# Crear el motor de base de datos asíncrono
-engine = create_async_engine(
-    settings.DATABASE_URL,
-    echo=True,  # Cambiar a False en producción
-    future=True,
-    poolclass=NullPool,  # Para desarrollo, usar pool apropiado en producción
-)
-
-# Crear el sessionmaker asíncrono
-AsyncSessionLocal = async_sessionmaker(
-    engine,
-    class_=AsyncSession,
-    expire_on_commit=False,
-    autocommit=False,
-    autoflush=False,
-)
-
-# Base para los modelos
-Base = declarative_base()
+# Cliente MongoDB global
+mongodb_client: Optional[AsyncIOMotorClient] = None
 
 
-async def get_db() -> AsyncGenerator[AsyncSession, None]:
-    """Dependencia para obtener sesión de base de datos"""
-    async with AsyncSessionLocal() as session:
-        try:
-            yield session
-            await session.commit()
-        except Exception:
-            await session.rollback()
-            raise
-        finally:
-            await session.close()
+async def connect_to_mongo():
+    """Conectar a MongoDB"""
+    global mongodb_client
+    mongodb_client = AsyncIOMotorClient(settings.MONGODB_URL)
+    print(f"✅ Conectado a MongoDB: {settings.MONGODB_DB}")
 
 
-async def init_db() -> None:
-    """Inicializar la base de datos"""
-    async with engine.begin() as conn:
-        # Crear todas las tablas
-        await conn.run_sync(Base.metadata.create_all)
+async def close_mongo_connection():
+    """Cerrar conexión a MongoDB"""
+    global mongodb_client
+    if mongodb_client:
+        mongodb_client.close()
+        print("❌ Desconectado de MongoDB")
 
 
-async def close_db() -> None:
-    """Cerrar conexiones de base de datos"""
-    await engine.dispose()
+async def get_database() -> AsyncIOMotorDatabase:
+    """Obtener instancia de la base de datos"""
+    if mongodb_client is None:
+        await connect_to_mongo()
+    return mongodb_client[settings.MONGODB_DB]
+
+
+def get_collection(collection_name: str):
+    """Obtener colección de MongoDB de forma síncrona (para uso en contextos no async)"""
+    if mongodb_client is None:
+        raise Exception("MongoDB no está conectado")
+    db = mongodb_client[settings.MONGODB_DB]
+    return db[collection_name]

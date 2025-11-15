@@ -1,23 +1,22 @@
-version: '3.8'
-
 services:
-  # Base de datos PostgreSQL
-  postgres:
-    image: postgres:15
-    container_name: v1tr0_postgres
+  mongodb:
+    image: mongo:7.0
+    container_name: v1tr0_mongodb
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: v1tr0_db
+      MONGO_INITDB_DATABASE: v1tr0_db
     ports:
-      - "5432:5432"
+      - "27017:27017"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - mongodb_data:/data/db
     networks:
       - v1tr0_network
+    restart: unless-stopped
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/v1tr0_db --quiet
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
-  # Redis para cache
   redis:
     image: redis:7-alpine
     container_name: v1tr0_redis
@@ -27,40 +26,52 @@ services:
       - redis_data:/data
     networks:
       - v1tr0_network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
 
-  # API Backend
   api:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
     container_name: v1tr0_api
     ports:
       - "8000:8000"
     environment:
-      - DATABASE_URL=postgresql+asyncpg://postgres:postgres@postgres:5432/v1tr0_db
+      - MONGODB_URL=mongodb://mongodb:27017/v1tr0_db
+      - MONGODB_DB=v1tr0_db
       - REDIS_URL=redis://redis:6379
-      - ENVIRONMENT=development
-    volumes:
-      - .:/app
-      - ./uploads:/app/uploads
+      - ENVIRONMENT=production
+      - LOG_LEVEL=INFO
     depends_on:
-      - postgres
-      - redis
+      mongodb:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
     networks:
       - v1tr0_network
-    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+    restart: unless-stopped
 
-  # Adminer para gestión de BD (opcional)
-  adminer:
-    image: adminer
-    container_name: v1tr0_adminer
+  mongo-express:
+    image: mongo-express:latest
+    container_name: v1tr0_mongo_express
     ports:
-      - "8080:8080"
+      - "8081:8081"
+    environment:
+      ME_CONFIG_MONGODB_URL: mongodb://mongodb:27017/
+      ME_CONFIG_BASICAUTH_USERNAME: admin
+      ME_CONFIG_BASICAUTH_PASSWORD: admin123
     depends_on:
-      - postgres
+      - mongodb
     networks:
       - v1tr0_network
+    restart: unless-stopped
 
 volumes:
-  postgres_data:
+  mongodb_data:
   redis_data:
 
 networks:

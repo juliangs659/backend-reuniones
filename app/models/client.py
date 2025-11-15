@@ -1,50 +1,29 @@
-from sqlalchemy import Column, String, Text, Boolean, Integer, ForeignKey
-from sqlalchemy.orm import relationship
-from app.models.base import BaseModel
+from typing import Optional
+from pydantic import Field
+from app.models.base import MongoBaseModel, PyObjectId
 
 
-class Client(BaseModel):
-    """Modelo de cliente"""
-    __tablename__ = "clients"
+class Client(MongoBaseModel):
+    name: str = Field(..., index=True)
+    company: Optional[str] = None
+    email: Optional[str] = None
+    phone: Optional[str] = None
     
-    # Campos básicos
-    name = Column(String(255), nullable=False, index=True)
-    company = Column(String(255), nullable=True)
-    email = Column(String(255), nullable=True, index=True)
-    phone = Column(String(50), nullable=True)
+    address: Optional[str] = None
+    city: Optional[str] = None
+    country: Optional[str] = None
+    postal_code: Optional[str] = None
     
-    # Información de contacto
-    address = Column(Text, nullable=True)
-    city = Column(String(100), nullable=True)
-    country = Column(String(100), nullable=True)
-    postal_code = Column(String(20), nullable=True)
+    website: Optional[str] = None
+    industry: Optional[str] = None
+    company_size: Optional[str] = None
     
-    # Información adicional
-    website = Column(String(500), nullable=True)
-    industry = Column(String(100), nullable=True)
-    company_size = Column(String(50), nullable=True)  # small, medium, large, enterprise
+    status: str = "active"
+    notes: Optional[str] = None
+    priority: str = "medium"
     
-    # Campos de gestión
-    status = Column(String(20), default="active", nullable=False)  # active, inactive, prospect
-    notes = Column(Text, nullable=True)
-    priority = Column(String(20), default="medium", nullable=False)  # low, medium, high
+    tax_id: Optional[str] = None
+    billing_email: Optional[str] = None
+    payment_terms: Optional[int] = 30
     
-    # Información financiera
-    tax_id = Column(String(50), nullable=True)
-    billing_email = Column(String(255), nullable=True)
-    payment_terms = Column(Integer, default=30, nullable=True)  # días
-    
-    # Relación con usuario (quien creó el cliente)
-    created_by_id = Column(Integer, ForeignKey("users.id"), nullable=True)
-    created_by = relationship("User", foreign_keys=[created_by_id])
-    
-    # Relaciones
-    projects = relationship("Project", back_populates="client", cascade="all, delete-orphan")
-    
-    def __repr__(self):
-        return f"<Client(id={self.id}, name='{self.name}', company='{self.company}')>"
-    
-    @property
-    def display_name(self):
-        """Nombre para mostrar (prioriza company sobre name)"""
-        return self.company if self.company else self.name
+    created_by_id: Optional[PyObjectId] = None
