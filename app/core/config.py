@@ -59,7 +59,7 @@ class Settings(BaseSettings):
     
     # OpenAI (para procesamiento de transcripciones y IA)
     OPENAI_API_KEY: Optional[str] = None
-    OPENAI_MODEL: str = "gpt-4-turbo-preview"  # Modelo por defecto
+    OPENAI_MODEL: str = "gpt-4o-mini"  # Modelo económico y eficiente
     
     # Jitsi Meet
     JITSI_DOMAIN: str = "meet.jit.si"

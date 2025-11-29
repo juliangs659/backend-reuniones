@@ -6,11 +6,12 @@ Backend API para V1tr0 Dashboard construido con FastAPI, MongoDB y OpenAI para p
 
 - ✅ **FastAPI** - Framework moderno y rápido con async/await
 - ✅ **MongoDB** - Base de datos NoSQL con Motor (async driver)
-- ✅ **OpenAI Integration** - Procesamiento de transcripciones con IA
+- ✅ **OpenAI Integration** - Procesamiento de transcripciones con IA (GPT-4o-mini)
+- ✅ **n8n Integration** - Automatización de workflows sin código
 - ✅ **Sin autenticación** - API pública (por ahora)
 - ✅ **Modelos Pydantic** - Validación de datos robusta
 - ✅ **OpenAPI/Swagger** - Documentación automática
-- ✅ **Docker Compose** - Despliegue simplificado
+- ✅ **Docker Compose** - Despliegue simplificado con 5 servicios
 - ✅ **Jitsi Meet** - Integración de videollamadas
 - ✅ **Redis Cache** - Para mejor rendimiento
 
@@ -294,15 +295,34 @@ db.transcriptions.deleteMany({})
 ### Ejecutar con Docker Compose:
 
 ```bash
-# Iniciar todos los servicios
+# Iniciar todos los servicios (API, MongoDB, Redis, Mongo-Express, n8n)
 sudo docker compose up -d
 
 # Ver logs
 sudo docker compose logs -f
 
+# Ver servicios corriendo
+docker ps
+
 # Detener servicios
 sudo docker compose down
 ```
+
+### Servicios disponibles:
+
+| Servicio | Puerto | URL | Descripción |
+|----------|--------|-----|-------------|
+| **API** | 8000 | http://localhost:8000 | FastAPI Backend |
+| **MongoDB** | 27017 | mongodb://localhost:27017 | Base de datos |
+| **Mongo Express** | 8081 | http://localhost:8081 | Admin MongoDB |
+| **Redis** | 6379 | redis://localhost:6379 | Cache |
+| **n8n** | 5678 | http://localhost:5678 | Automatización workflows |
+
+**n8n credentials:**
+- Usuario: `admin`
+- Contraseña: `admin123`
+
+📚 **Ver guía completa:** [N8N_INTEGRATION_GUIDE.md](N8N_INTEGRATION_GUIDE.md)
 
 ## 🧪 Testing
 
@@ -339,8 +359,13 @@ El sistema procesa transcripciones de Microsoft Teams usando OpenAI para:
 ```bash
 # En tu archivo .env
 OPENAI_API_KEY=sk-tu-api-key-real
-OPENAI_MODEL=gpt-4-turbo-preview
+OPENAI_MODEL=gpt-4o-mini  # Modelo económico y eficiente
 ```
+
+**💰 Costos estimados con gpt-4o-mini:**
+- Input: $0.15 / 1M tokens (~$0.0008 por transcripción)
+- Output: $0.60 / 1M tokens (~$0.0012 por análisis)
+- **Total:** ~$0.002 por transcripción (¡menos de medio centavo!)
 
 Sin la API key configurada, el sistema funcionará normalmente pero el endpoint `/process` devolverá error.
 
@@ -381,7 +406,7 @@ mypy app/
 | `MONGODB_URL` | URL de conexión a MongoDB | `mongodb://localhost:27017/v1tr0_db` |
 | `MONGODB_DB` | Nombre de la base de datos | `v1tr0_db` |
 | `OPENAI_API_KEY` | **API Key de OpenAI** (requerida para IA) | `tu-api-key-aqui` |
-| `OPENAI_MODEL` | Modelo de OpenAI | `gpt-4-turbo-preview` |
+| `OPENAI_MODEL` | Modelo de OpenAI | `gpt-4o-mini` |
 | `REDIS_URL` | URL de Redis | `redis://localhost:6379` |
 | `BACKEND_CORS_ORIGINS` | Orígenes permitidos para CORS | `["http://localhost:3000"]` |
 | `JITSI_DOMAIN` | Dominio de Jitsi Meet | `meet.jit.si` |
