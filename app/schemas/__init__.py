@@ -1,29 +1,30 @@
-"""Schemas module - Esquemas Pydantic para validación de datos"""
-
-from app.schemas.user import User, UserCreate, UserUpdate, UserInDB
-from app.schemas.client import Client, ClientCreate, ClientUpdate, ClientInDB
-from app.schemas.project import Project, ProjectCreate, ProjectUpdate, ProjectInDB
-from app.schemas.meeting import Meeting, MeetingCreate, MeetingUpdate, MeetingInDB
-from app.schemas.transcription import Transcription, TranscriptionCreate, TranscriptionUpdate, TranscriptionInDB
-from app.schemas.chat_message import ChatMessage, ChatMessageCreate, ChatMessageUpdate, ChatMessageInDB
-from app.schemas.auth import Token, TokenData, LoginRequest
-from app.schemas.common import Message, ErrorResponse
+from app.schemas.common import Message, ErrorResponse, PaginationParams, PaginatedResponse
+from app.schemas.meeting import MeetingCreate, MeetingUpdate, MeetingResponse
+from app.schemas.transcription import TranscriptionCreate, TranscriptionUpdate, TranscriptionResponse, TranscriptionProcessRequest
+from app.schemas.project_phase import ProjectPhaseCreate, ProjectPhaseUpdate, ProjectPhaseResponse, PhaseReorderRequest
+from app.schemas.requirement import RequirementCreate, RequirementUpdate, RequirementResponse
+from app.schemas.phase_comment import PhaseCommentCreate, PhaseCommentUpdate, PhaseCommentResponse
 
 __all__ = [
-    # User schemas
-    "User", "UserCreate", "UserUpdate", "UserInDB",
-    # Client schemas
-    "Client", "ClientCreate", "ClientUpdate", "ClientInDB",
-    # Project schemas
-    "Project", "ProjectCreate", "ProjectUpdate", "ProjectInDB",
-    # Meeting schemas
-    "Meeting", "MeetingCreate", "MeetingUpdate", "MeetingInDB",
-    # Transcription schemas
-    "Transcription", "TranscriptionCreate", "TranscriptionUpdate", "TranscriptionInDB",
-    # Chat message schemas
-    "ChatMessage", "ChatMessageCreate", "ChatMessageUpdate", "ChatMessageInDB",
-    # Auth schemas
-    "Token", "TokenData", "LoginRequest",
-    # Common schemas
-    "Message", "ErrorResponse"
+    "Message",
+    "ErrorResponse",
+    "PaginationParams",
+    "PaginatedResponse",
+    "MeetingCreate",
+    "MeetingUpdate",
+    "MeetingResponse",
+    "TranscriptionCreate",
+    "TranscriptionUpdate",
+    "TranscriptionResponse",
+    "TranscriptionProcessRequest",
+    "ProjectPhaseCreate",
+    "ProjectPhaseUpdate",
+    "ProjectPhaseResponse",
+    "PhaseReorderRequest",
+    "RequirementCreate",
+    "RequirementUpdate",
+    "RequirementResponse",
+    "PhaseCommentCreate",
+    "PhaseCommentUpdate",
+    "PhaseCommentResponse",
 ]

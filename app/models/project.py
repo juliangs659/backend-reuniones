@@ -1,74 +1,47 @@
-from sqlalchemy import Column, String, Text, Boolean, Integer, ForeignKey, DateTime, Numeric, JSON
-from sqlalchemy.orm import relationship
 from datetime import datetime
-from app.models.base import BaseModel
+from typing import Optional, List, Dict, Any
+from pydantic import Field
+from app.models.base import MongoBaseModel, PyObjectId
 
 
-class Project(BaseModel):
-    """Modelo de proyecto"""
-    __tablename__ = "projects"
+class Project(MongoBaseModel):
+    title: str = Field(..., index=True)
+    description: Optional[str] = None
     
-    # Campos básicos
-    title = Column(String(255), nullable=False, index=True)
-    description = Column(Text, nullable=True)
+    status: str = "planned"
+    progress: int = 0
+    priority: str = "medium"
     
-    # Estado y progreso
-    status = Column(String(20), default="planned", nullable=False)  # planned, in-progress, completed, on-hold, cancelled
-    progress = Column(Integer, default=0, nullable=False)  # 0-100
-    priority = Column(String(20), default="medium", nullable=False)  # low, medium, high, urgent
+    # Fase actual del proyecto
+    current_phase_id: Optional[PyObjectId] = Field(
+        None, 
+        description="ID de la fase actual en la que se encuentra el proyecto"
+    )
+    completion_percentage: int = Field(
+        default=0, 
+        ge=0, 
+        le=100,
+        description="Porcentaje de completitud general del proyecto"
+    )
     
-    # Fechas
-    start_date = Column(DateTime, nullable=True)
-    end_date = Column(DateTime, nullable=True)
-    deadline = Column(DateTime, nullable=True)
+    start_date: Optional[datetime] = None
+    end_date: Optional[datetime] = None
+    deadline: Optional[datetime] = None
     
-    # Información financiera
-    budget = Column(Numeric(10, 2), nullable=True)
-    hourly_rate = Column(Numeric(8, 2), nullable=True)
-    estimated_hours = Column(Integer, nullable=True)
-    actual_hours = Column(Integer, default=0, nullable=False)
+    budget: Optional[float] = None
+    hourly_rate: Optional[float] = None
+    estimated_hours: Optional[int] = None
+    actual_hours: int = 0
     
-    # Configuración
-    is_billable = Column(Boolean, default=True, nullable=False)
-    is_active = Column(Boolean, default=True, nullable=False)
+    is_billable: bool = True
+    is_active: bool = True
     
-    # Metadatos adicionales
-    tags = Column(JSON, nullable=True)  # Lista de tags
-    custom_fields = Column(JSON, nullable=True)  # Campos personalizados
+    tags: Optional[List[str]] = None
+    custom_fields: Optional[Dict[str, Any]] = None
     
-    # Relaciones
-    client_id = Column(Integer, ForeignKey("clients.id"), nullable=False)
-    client = relationship("Client", back_populates="projects")
+    client_id: PyObjectId
+    owner_id: PyObjectId
     
-    owner_id = Column(Integer, ForeignKey("users.id"), nullable=False)
-    owner = relationship("User", back_populates="projects")
-    
-    # Relaciones con otros modelos
-    meetings = relationship("Meeting", back_populates="project", cascade="all, delete-orphan")
-    chat_messages = relationship("ChatMessage", back_populates="project", cascade="all, delete-orphan")
-    
-    def __repr__(self):
-        return f"<Project(id={self.id}, title='{self.title}', status='{self.status}')>"
-    
-    @property
-    def is_overdue(self):
-        """Verificar si el proyecto está atrasado"""
-        if self.deadline and self.status not in ['completed', 'cancelled']:
-            return datetime.utcnow() > self.deadline
-        return False
-    
-    @property
-    def days_remaining(self):
-        """Días restantes hasta la fecha límite"""
-        if self.deadline and self.status not in ['completed', 'cancelled']:
-            delta = self.deadline - datetime.utcnow()
-            return delta.days
-        return None
-    
-    @property
-    def budget_utilization(self):
-        """Porcentaje de presupuesto utilizado"""
-        if self.budget and self.hourly_rate and self.actual_hours:
-            spent = float(self.hourly_rate) * self.actual_hours
-            return (spent / float(self.budget)) * 100
-        return 0
+    # Timestamps
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None

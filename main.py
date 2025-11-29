@@ -5,26 +5,25 @@ from contextlib import asynccontextmanager
 import uvicorn
 
 from app.core.config import settings
-from app.core.database import engine, Base
+from app.core.database import connect_to_mongo, close_mongo_connection
 from app.api.v1.api import api_router
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Gestión del ciclo de vida de la aplicación"""
-    # Crear tablas al iniciar
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
+    # Conectar a MongoDB al iniciar
+    await connect_to_mongo()
     yield
-    # Cleanup al cerrar
-    await engine.dispose()
+    # Cerrar conexión al finalizar
+    await close_mongo_connection()
 
 
 def create_application() -> FastAPI:
     """Factory para crear la aplicación FastAPI"""
     app = FastAPI(
         title=settings.PROJECT_NAME,
-        description="API Backend para V1tr0 Dashboard",
+        description="API Backend para V1tr0 Dashboard - MongoDB",
         version="1.0.0",
         openapi_url=f"{settings.API_V1_STR}/openapi.json",
         lifespan=lifespan
@@ -58,16 +57,17 @@ app = create_application()
 async def root():
     """Endpoint de salud básico"""
     return {
-        "message": "V1tr0 Backend API",
+        "message": "V1tr0 Backend API - MongoDB",
         "status": "running",
-        "version": "1.0.0"
+        "version": "1.0.0",
+        "database": "MongoDB"
     }
 
 
 @app.get("/health")
 async def health_check():
     """Endpoint de verificación de salud"""
-    return {"status": "healthy"}
+    return {"status": "healthy", "database": "MongoDB"}
 
 
 if __name__ == "__main__":

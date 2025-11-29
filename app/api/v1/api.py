@@ -1,56 +1,45 @@
 from fastapi import APIRouter
-
 from app.api.v1.endpoints import (
-    auth,
-    projects,
-    clients,
-    meetings,
+    meetings_router,
     transcriptions,
-    ai_chat,
-    users
+    project_phases,
+    requirements,
+    phase_comments
 )
 
 api_router = APIRouter()
 
-# Incluir todas las rutas
+# Meetings
 api_router.include_router(
-    auth.router, 
-    prefix="/auth", 
-    tags=["authentication"]
-)
-
-api_router.include_router(
-    users.router, 
-    prefix="/users", 
-    tags=["users"]
-)
-
-api_router.include_router(
-    projects.router, 
-    prefix="/projects", 
-    tags=["projects"]
-)
-
-api_router.include_router(
-    clients.router, 
-    prefix="/clients", 
-    tags=["clients"]
-)
-
-api_router.include_router(
-    meetings.router, 
+    meetings_router, 
     prefix="/meetings", 
     tags=["meetings"]
 )
 
+# Transcripciones
 api_router.include_router(
-    transcriptions.router, 
-    prefix="/transcriptions", 
+    transcriptions.router,
+    prefix="/transcriptions",
     tags=["transcriptions"]
 )
 
+# Fases de Proyectos
 api_router.include_router(
-    ai_chat.router, 
-    prefix="/ai", 
-    tags=["ai-chat"]
+    project_phases.router,
+    prefix="/project-phases",
+    tags=["project-phases"]
+)
+
+# Requerimientos
+api_router.include_router(
+    requirements.router,
+    prefix="/requirements",
+    tags=["requirements"]
+)
+
+# Comentarios de Fases
+api_router.include_router(
+    phase_comments.router,
+    prefix="/phase-comments",
+    tags=["phase-comments"]
 )
